@@ -38,7 +38,7 @@ int main(int argc, const char** argv)
 	bool tryflip;
 	CascadeClassifier cascade, nestedCascade;
 	double scale = 1;
-	cascadeName = "haarcascade_frontalface_alt.xml";
+	cascadeName = "Vest-1-Linux/haarcascade_frontalface_alt.xml";
 	tryflip = false;
 	inputName = "0"; // Camera 0
 
@@ -79,6 +79,8 @@ int main(int argc, const char** argv)
 	return 0;
 }
 
+/* The data cannot contain zero char values.
+When 0x00, send 0x01 to avoid serial communication issues. */
 bool writeDataToSerial(string port, char data[], size_t size) {
 	int fd;
 	fd = open(port.c_str(), O_RDWR | O_NOCTTY);
@@ -129,10 +131,7 @@ bool writeDataToSerial(string port, char data[], size_t size) {
 	return true;
 }
 
-void detectAndDraw(Mat& img, CascadeClassifier& cascade,
-	CascadeClassifier& nestedCascade,
-	double scale, bool tryflip)
-{
+void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale, bool tryflip) {
 	double t = 0;
 	vector<Rect> faces, faces2;
 	const static Scalar colors[] =
@@ -166,6 +165,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
 		char(255), char(255), char(255), char(255), char(255),
 		'>', '\0' };
 
+	/* When zero, send 1 to avoid serial communication issues */
 	char noFace[13] = { '<',
 		char(1), char(1), char(1), char(1), char(1),
 		char(1), char(1), char(1), char(1), char(1),
